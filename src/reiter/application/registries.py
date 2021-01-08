@@ -1,32 +1,46 @@
 import heapq
-from collections import abc
-from typing import Callable, Tuple, Iterable, Optional
+from typing import (
+    Callable, Dict, TypeVar, Tuple, Iterable, Optional, Reversible, Sized)
 
 
-class NamedComponents(dict):
+Component = TypeVar('Component')
 
-    def register(self, component, name):
+
+class NamedComponents(Dict[str, Component]):
+
+    def __init__(self, items: Optional[Dict[str, Component]]=None):
+        if items is not None:
+            if not all(isinstance(key, str) for key in items):
+                raise TypeError('All keys must be strings.')
+            super().__init__(items)
+
+    def register(self, component: Component, name: str):
         self[name] = component
 
-    def component(self, name):
+    def component(self, name: str):
         """Component decorator
         """
-        def register_component(component):
+        def register_component(component: Component) -> Component:
             self.register(component, name)
             return component
         return register_component
 
-    def unregister(self, name):
+    def unregister(self, name: str) -> None:
         del self[name]
 
     def __add__(self, components: dict):
         return self.__class__({**self, **components})
 
+    def __setitem__(self, name: str, component: Component):
+        if not isinstance(name, str):
+            raise TypeError('Key must be a string.')
+        return super().__setitem__(name, component)
 
-PriorityIterable = Iterable[Tuple[int, Callable]]
+
+PriorityIterable = Iterable[Tuple[int, Component]]
 
 
-class PriorityList(PriorityIterable, abc.Reversible, abc.Sized):
+class PriorityList(Reversible, Sized, PriorityIterable):
 
     __slots__ = ('_components',)
 
@@ -37,7 +51,7 @@ class PriorityList(PriorityIterable, abc.Reversible, abc.Sized):
             self._components = list(components)
             heapq.heapify(self._components)
 
-    def register(self, item: Callable, order: int):
+    def register(self, item: Component, order: int):
         heappush(self._components, (order, item))
 
     def __len__(self):
