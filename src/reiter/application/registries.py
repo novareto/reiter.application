@@ -1,4 +1,6 @@
 import heapq
+import multidict
+import itertools
 from typing import (
     Callable, Dict, TypeVar, Tuple, Iterable, Optional, Reversible, Sized)
 
@@ -37,6 +39,25 @@ class NamedComponents(Dict[str, Component]):
         return super().__setitem__(name, component)
 
 
+class Subscribers(multidict.MultiDict):
+
+    def __add__(self, subdict: multidict.MultiDict):
+        return self.__class__(
+            itertools.chain(self.items(), subdict.items()))
+
+    def subscribe(self, name: str):
+        def add_subscriber(subscriber: Callable) -> Callable:
+            self.add(name, subscriber)
+            return subscriber
+        return add_subscriber
+
+    def notify(self, name: str, *args, **kwargs):
+        for subscriber in self.getall(name):
+            if (result := subscriber(*args, **kwargs)):
+                # Having a result does stop the iteration.
+                return result
+
+
 PriorityIterable = Iterable[Tuple[int, Component]]
 
 
@@ -65,5 +86,5 @@ class PriorityList(Reversible, Sized, PriorityIterable):
 
     def __add__(self, priority_iterable: PriorityIterable):
         assert isinstance(priority_iterable, PriorityIterable)
-        components = self._components + list(priority_iterable)
-        return self.__class__(components)
+        return self.__class__(
+            itertools.chain(self._components, priority_iterable))
