@@ -73,7 +73,7 @@ class PriorityList(Reversible, Sized, PriorityIterable):
             heapq.heapify(self._components)
 
     def register(self, item: Component, order: int):
-        heappush(self._components, (order, item))
+        heapq.heappush(self._components, (order, item))
 
     def __len__(self):
         return len(self._components)

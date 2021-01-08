@@ -8,7 +8,7 @@ import horseman.meta
 import horseman.response
 import horseman.http
 from roughrider.routing.route import Routes
-from roughrider.application.registries import NamedComponents, PriorityList
+from reiter.application import registries
 
 
 @dataclass
@@ -16,9 +16,15 @@ class Blueprint:
 
     name: str
     config: Mapping = field(default_factory=partial(DictConfig, {}))
-    utilities: Mapping = field(default_factory=NamedComponents)
+    utilities: Mapping = field(default_factory=registries.NamedComponents)
     routes: Routes = field(default_factory=Routes)
-    subscribers: dict = field(default_factory=partial(defaultdict, list))
+    subscribers: dict = field(default_factory=registries.Subscribers)
+
+    def route(self, *args, **kwargs):
+        return self.routes.register(*args, **kwargs)
+
+    def subscribe(self, *args, **kwargs):
+        return self.subscribers.subscribe(*args, **kwargs)
 
     def apply(self, app: 'Blueprint'):
         app.routes += self.routes
@@ -33,8 +39,8 @@ class Blueprint:
 @dataclass
 class Application(Blueprint, horseman.meta.APINode):
 
-    _caller: Optional[Callable] = default=None
-    middlewares: list = field(default_factory=PriorityList)
+    _caller: Optional[Callable] = None
+    middlewares: list = field(default_factory=registries.PriorityList)
 
     def resolve(self, path, environ):
         route = self.routes.match(
@@ -49,9 +55,9 @@ class Application(Blueprint, horseman.meta.APINode):
         return None
 
     def register_middleware(self, middleware, order):
-        self._middlewares.register(middleware, order=order)
+        self.middlewares.register(middleware, order=order)
         self._caller = reduce(
             lambda x, y: y(x),
-            (func for order, func in reversed(self._middlewares)),
+            (func for order, func in reversed(self.middlewares)),
              super().__call__
         )
