@@ -1,4 +1,3 @@
-from collections import defaultdict
 from dataclasses import dataclass, field
 from functools import partial, reduce
 from typing import Mapping, Optional, Callable
@@ -59,5 +58,5 @@ class Application(Blueprint, horseman.meta.APINode):
         self._caller = reduce(
             lambda x, y: y(x),
             (func for order, func in reversed(self.middlewares)),
-             super().__call__
+            super().__call__
         )

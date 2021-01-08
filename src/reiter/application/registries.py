@@ -10,7 +10,7 @@ Component = TypeVar('Component')
 
 class NamedComponents(Dict[str, Component]):
 
-    def __init__(self, items: Optional[Dict[str, Component]]=None):
+    def __init__(self, items: Optional[Dict[str, Component]] = None):
         if items is not None:
             if not all(isinstance(key, str) for key in items):
                 raise TypeError('All keys must be strings.')
