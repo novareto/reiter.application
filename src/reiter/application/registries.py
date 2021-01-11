@@ -1,4 +1,3 @@
-import heapq
 import multidict
 import itertools
 from typing import (
