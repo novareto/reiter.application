@@ -25,6 +25,9 @@ class Blueprint:
     def subscribe(self, *args, **kwargs):
         return self.subscribers.subscribe(*args, **kwargs)
 
+    def notify(self, *args, **kwargs):
+        return self.subscribers.notify(*args, **kwargs)
+
     def apply(self, app: 'Blueprint'):
         app.routes += self.routes
         if self.config:
@@ -42,8 +45,7 @@ class Application(Blueprint, horseman.meta.APINode):
     middlewares: list = field(default_factory=registries.PriorityList)
 
     def resolve(self, path, environ):
-        route = self.routes.match(
-            environ['REQUEST_METHOD'], path)
+        route = self.routes.match_method(path, environ['REQUEST_METHOD'])
         if route is not None:
             self.notify('route_found', self, route, environ)
             request = self.request_factory(self, environ, route)

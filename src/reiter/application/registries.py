@@ -52,10 +52,11 @@ class Subscribers(multidict.MultiDict):
         return add_subscriber
 
     def notify(self, name: str, *args, **kwargs):
-        for subscriber in self.getall(name):
-            if (result := subscriber(*args, **kwargs)):
-                # Having a result does stop the iteration.
-                return result
+        if name in self:
+            for subscriber in self.getall(name):
+                if (result := subscriber(*args, **kwargs)):
+                    # Having a result does stop the iteration.
+                    return result
 
 
 PriorityIterable = Iterable[Tuple[int, Component]]
