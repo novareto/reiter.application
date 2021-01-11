@@ -70,11 +70,16 @@ class PriorityList(Reversible, Sized, PriorityIterable):
         if components is None:
             self._components = []
         else:
-            self._components = list(components)
-            heapq.heapify(self._components)
+            self._components = list(sorted(components))
 
     def register(self, item: Component, order: int):
-        heapq.heappush(self._components, (order, item))
+        self._components.append((order, item))
+        self._components.sort()
+
+    def unregister(self, item: Component, order: int):
+        self._components = list(
+            filter((order, item).__ne__, self._components)
+        )
 
     def __len__(self):
         return len(self._components)
@@ -86,6 +91,10 @@ class PriorityList(Reversible, Sized, PriorityIterable):
         return reversed(self._components)
 
     def __add__(self, priority_iterable: PriorityIterable):
-        assert isinstance(priority_iterable, PriorityIterable)
+        if not isinstance(priority_iterable, PriorityList):
+            raise TypeError(
+                f"unsupported operand type(s) for +: "
+                f"'{self.__class__.__name__}' "
+                f"and '{priority_iterable.__class__.__name__}'")
         return self.__class__(
             itertools.chain(self._components, priority_iterable))
