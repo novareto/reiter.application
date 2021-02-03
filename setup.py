@@ -44,5 +44,8 @@ setup(
         'test': test_requires,
     },
     entry_points={
+        'chameleon.tales': [
+            'slot = reiter.application.browser.slot:SlotExpr',
+        ],
     },
 )
