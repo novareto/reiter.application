@@ -53,6 +53,10 @@ class UIRegistry:
         return template.render(**namespace)
 
     def response(self, template, request, code=200, headers=None, **kwargs):
+        if not headers:
+            headers = {"Content-Type": "text/html; charset=utf-8"}
+        elif 'Content-Type' not in headers:
+            headers["Content-Type"] = "text/html; charset=utf-8"
         return horseman.response.reply(
             code=code,
             body=self.render(template, request, **kwargs),
