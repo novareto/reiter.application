@@ -1,4 +1,3 @@
-import importlib
 import importscan
 from pkg_resources import iter_entry_points
 
