@@ -48,7 +48,6 @@ class UIRegistry:
                 request.environ["HTTP_HOST"],
                 request.environ["SCRIPT_NAME"]
             )
-            namespace['messages'] = request.utilities['flash']
             return layout.render(content, **namespace)
         return template.render(**namespace)
 
