@@ -2,6 +2,9 @@ import reg
 import horseman.response
 
 
+generic = object
+
+
 class UIRegistry:
 
     def __init__(self, default_layout_name='default'):
@@ -10,7 +13,7 @@ class UIRegistry:
     @reg.dispatch_method(
         reg.match_instance('request'), reg.match_key('name'))
     def layout(self, request, name):
-        raise RuntimeError("Unknown layout.")
+        raise LookupError("Unknown layout.")
 
     def register_layout(self, request, name: str = None):
         if name is None:
@@ -26,14 +29,17 @@ class UIRegistry:
         return self.layout(request, name)
 
     @reg.dispatch_method(
-        reg.match_instance('request'), reg.match_key("name"))
-    def slot(self, request, name):
-        raise RuntimeError("Unknown slot.")
+        reg.match_instance('request'),
+        reg.match_key("name"),
+        reg.match_instance('view'),
+    )
+    def slot(self, request, name, view):
+        raise LookupError("Unknown slot.")
 
-    def register_slot(self, request, name):
+    def register_slot(self, request, name, view=generic):
         def add_slot(slot):
             return self.slot.register(
-                reg.methodify(slot), request=request, name=name)
+                reg.methodify(slot), request=request, name=name, view=view)
         return add_slot
 
     def render(self, template, request, layout=..., **namespace):

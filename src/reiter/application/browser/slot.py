@@ -25,10 +25,15 @@ def query_slot(econtext, name):
     """Compute the result of a slot expression
     """
     request = econtext.get('request')
-    return request.app.ui.slot(request, name)
+    view = econtext.get('view', object())
+    try:
+        return request.app.ui.slot(request, name, view=view)
+    except LookupError:
+        # No slot found. We don't render anything.
+        return None
 
 
-class SlotExpr(object):
+class SlotExpr:
     """
     This is the interpreter of a slot: expression
     """
