@@ -29,6 +29,7 @@ class Request(RoutingRequest):
         self._extracted = False
         self.app = app
         self.environ = environ
+        self.script_name = environ['SCRIPT_NAME']
         self.method = environ['REQUEST_METHOD'].upper()
         self.route = route
         self.utilities = NamedComponents()
@@ -54,3 +55,6 @@ class Request(RoutingRequest):
                 self.environ['wsgi.input'], content_type.raw))
 
         return self.get_data()
+
+    def route_path(self, name, **params):
+        return self.script_name + self.app.routes.url_for(name, **params)
