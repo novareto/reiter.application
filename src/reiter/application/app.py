@@ -8,25 +8,19 @@ import horseman.response
 import horseman.http
 from roughrider.routing.route import Routes
 from reiter.application import registries
+from reiter.events.meta import EventsCenter
 
 
 @dataclass
-class Blueprint:
+class Blueprint(EventsCenter):
 
-    name: str
+    name: str = None
     config: Mapping = field(default_factory=partial(DictConfig, {}))
     utilities: Mapping = field(default_factory=registries.NamedComponents)
     routes: Routes = field(default_factory=Routes)
-    subscribers: dict = field(default_factory=registries.Subscribers)
 
     def route(self, *args, **kwargs):
         return self.routes.register(*args, **kwargs)
-
-    def subscribe(self, *args, **kwargs):
-        return self.subscribers.subscribe(*args, **kwargs)
-
-    def notify(self, *args, **kwargs):
-        return self.subscribers.notify(*args, **kwargs)
 
     def apply(self, app: 'Blueprint'):
         app.routes += self.routes

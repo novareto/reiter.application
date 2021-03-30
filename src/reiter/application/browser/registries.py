@@ -1,5 +1,6 @@
 import reg
 import horseman.response
+from functools import wraps
 
 
 generic = object
@@ -38,8 +39,9 @@ class UIRegistry:
 
     def register_slot(self, request, name, view=generic):
         def add_slot(slot):
-            return self.slot.register(
+            self.slot.register(
                 reg.methodify(slot), request=request, name=name, view=view)
+            return slot
         return add_slot
 
     def render(self, template, request, layout=..., **namespace):
