@@ -1,14 +1,14 @@
 from dataclasses import dataclass, field
 from functools import partial, reduce
-from typing import Mapping, Optional, Callable
 from omegaconf.dictconfig import DictConfig
+from typing import Mapping, Optional, Callable
 
+import horseman.http
 import horseman.meta
 import horseman.response
-import horseman.http
 from roughrider.routing.route import Routes
+from roughrider.events.meta import EventsCenter
 from reiter.application import registries
-from reiter.events.meta import EventsCenter
 
 
 @dataclass
