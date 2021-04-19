@@ -1,2 +1,3 @@
-git+https://github.com/trollfot/horseman.git@master#egg=horseman
-git+https://github.com/trollfot/roughrider.routing.git@master#egg=roughrider.routing
+git+https://github.com/HorsemanWSGI/horseman.git@master#egg=horseman
+git+https://github.com/HorsemanWSGI/roughrider.routing.git@master#egg=roughrider.routing
+git+https://github.com/HorsemanWSGI/roughrider.events.git@master#egg=roughrider.events
