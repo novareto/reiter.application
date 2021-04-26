@@ -1,14 +1,9 @@
 import cgi
 import typing
-import horseman.parsing
+import horseman.parsers
+from horseman.http import ContentType
 from roughrider.routing.components import RoutingRequest
 from reiter.application.registries import NamedComponents
-
-
-class ContentType(typing.NamedTuple):
-    raw: str
-    mimetype: str
-    options: dict
 
 
 class Request(RoutingRequest):
@@ -34,8 +29,8 @@ class Request(RoutingRequest):
         self.route = route
         self.utilities = NamedComponents()
         if 'CONTENT_TYPE' in self.environ:
-            ct = self.environ['CONTENT_TYPE']
-            self.content_type = ContentType(ct, *cgi.parse_header(ct))
+            self.content_type = ContentType.from_http_header(
+                self.environ['CONTENT_TYPE'])
         else:
             self.content_type = None
 
@@ -50,9 +45,9 @@ class Request(RoutingRequest):
             return self.get_data()
 
         self._extracted = True
-        if content_type := self.content_type:
-            self.set_data(horseman.parsing.parse(
-                self.environ['wsgi.input'], content_type.raw))
+        if self.content_type:
+            self.set_data(horseman.parsers.parser(
+                self.environ['wsgi.input'], self.content_type))
 
         return self.get_data()
 
