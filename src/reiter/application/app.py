@@ -56,3 +56,9 @@ class Application(Blueprint, horseman.meta.APINode):
             (func for order, func in reversed(self.middlewares)),
             super().__call__
         )
+
+    def __call__(self, environ, start_response):
+        environ['app'] = self
+        if self._caller is not None:
+            return self._caller(environ, start_response)
+        return super().__call__(environ, start_response)
