@@ -8,6 +8,7 @@ install_requires = [
     'horseman',
     'omegaconf',
     'chameleon',
+    'reg',
     'roughrider.events',
     'roughrider.routing',
 ]
