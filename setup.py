@@ -14,7 +14,6 @@ install_requires = [
 ]
 
 test_requires = [
-    'pyhamcrest',
     'pytest',
 ]
 
