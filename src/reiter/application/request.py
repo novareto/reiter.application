@@ -1,5 +1,3 @@
-import cgi
-import typing
 import horseman.parsers
 from horseman.http import ContentType
 from roughrider.routing.components import RoutingRequest

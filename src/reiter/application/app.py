@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from functools import partial, reduce
+from functools import partial
 from omegaconf.dictconfig import DictConfig
-from typing import Mapping, Optional, Callable
+from typing import Mapping
 
 import horseman.http
 import horseman.meta

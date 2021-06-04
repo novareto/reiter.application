@@ -1,6 +1,5 @@
 import reg
 import horseman.response
-from functools import wraps
 
 
 generic = object
