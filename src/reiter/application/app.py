@@ -6,11 +6,11 @@ from typing import Mapping
 import horseman.http
 import horseman.meta
 import horseman.response
-from roughrider.routing.route import Routes
-from reiter.application.request import Request
-from roughrider.events.meta import EventsCenter
 from reiter.application import registries
 from reiter.application.browser.registries import UIRegistry
+from reiter.application.request import Request
+from roughrider.events.meta import EventsCenter
+from roughrider.routing.route import Routes
 
 
 @dataclass
@@ -39,7 +39,7 @@ class Blueprint(EventsCenter):
 class Application(Blueprint, horseman.meta.APINode):
     """Barebone application
     """
-    request_factory: Request = field(default_factory=Request)
+    request_factory: Request = field(default=Request)
 
     def resolve(self, path, environ):
         route = self.routes.match_method(path, environ['REQUEST_METHOD'])
