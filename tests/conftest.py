@@ -1,6 +1,6 @@
 import pytest
 from frozendict import frozendict
-from io import StringIO
+from io import BytesIO
 
 
 @pytest.fixture(scope="session")
@@ -19,6 +19,6 @@ def environ():
         'wsgi.run_once': 0,
         'wsgi.multithread': 0,
         'wsgi.multiprocess': 0,
-        'wsgi.input': StringIO(""),
-        'wsgi.errors': StringIO()
+        'wsgi.input': BytesIO(b""),
+        'wsgi.errors': BytesIO()
     })
