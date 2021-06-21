@@ -1,4 +1,5 @@
 import horseman.parsers
+import urllib.parse
 from horseman.http import ContentType
 from roughrider.routing.components import RoutingRequest
 from reiter.application.registries import NamedComponents
@@ -51,3 +52,20 @@ class Request(RoutingRequest):
 
     def route_path(self, name, **params):
         return self.script_name + self.app.routes.url_for(name, **params)
+
+    def application_uri(self):
+        server = self.environ['SERVER_NAME']
+        scheme = self.environ.get('wsgi.url_scheme', 'http')
+        port = self.environ.get('SERVER_PORT', '80')
+        if port != '80':
+            return f"{scheme}://{server}:{port}{self.script_name}"
+        return f"{scheme}://{server}{self.script_name}"
+
+    def uri(self, include_query=True):
+        url = self.application_uri()
+        path_info = urllib.parse.quote(self.environ.get('PATH_INFO',''))
+        if include_query:
+            qs = urllib.parse.quote(self.environ.get('QUERY_STRING'))
+            if qs:
+                return f"{url}{path_info}?{qs}"
+        return f"{url}{path_info}"

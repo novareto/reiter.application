@@ -6,7 +6,6 @@ version = "0.1"
 
 install_requires = [
     'horseman',
-    'omegaconf',
     'chameleon',
     'reg',
     'roughrider.events',
@@ -15,6 +14,7 @@ install_requires = [
 
 test_requires = [
     'pytest',
+    'frozendict'
 ]
 
 
