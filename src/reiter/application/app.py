@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from functools import partial
-from omegaconf.dictconfig import DictConfig
 from typing import Mapping
 
 import horseman.http
@@ -18,7 +17,6 @@ class Blueprint(EventsCenter):
     """Application skeleton.
     """
     name: str = None
-    config: Mapping = field(default_factory=partial(DictConfig, {}))
     utilities: Mapping = field(default_factory=registries.NamedComponents)
     routes: Routes = field(default_factory=Routes)
 
