@@ -34,7 +34,7 @@ class Blueprint(EventsCenter):
 
 
 @dataclass
-class Application(Blueprint, horseman.meta.APINode):
+class Application(Blueprint, horseman.meta.Node):
     """Barebone application
     """
     request_factory: Request = field(default=Request)
