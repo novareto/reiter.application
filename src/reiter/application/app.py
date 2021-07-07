@@ -5,23 +5,28 @@ from typing import Mapping
 import horseman.http
 import horseman.meta
 import horseman.response
+from reiter.events import Subscribers
+from reiter.application import events
 from reiter.application import registries
 from reiter.application.browser.registries import UIRegistry
 from reiter.application.request import Request
-from roughrider.events.meta import EventsCenter
 from roughrider.routing.route import Routes
 
 
 @dataclass
-class Blueprint(EventsCenter):
+class Blueprint:
     """Application skeleton.
     """
     name: str = None
     utilities: Mapping = field(default_factory=registries.NamedComponents)
     routes: Routes = field(default_factory=Routes)
+    subscribers: Subscribers = field(default_factory=Subscribers)
 
     def route(self, *args, **kwargs):
         return self.routes.register(*args, **kwargs)
+
+    def notify(self, *args, **kwargs):
+        return self.subscribers.notify(*args, **kwargs)
 
     def apply(self, app: 'Blueprint'):
         app.routes += self.routes
@@ -42,11 +47,11 @@ class Application(Blueprint, horseman.meta.Node):
     def resolve(self, path, environ):
         route = self.routes.match_method(path, environ['REQUEST_METHOD'])
         if route is not None:
-            self.notify('route_found', self, route, environ)
+            self.notify(events.RouteFound(self, route, environ))
             request = self.request_factory(self, environ, route)
-            self.notify('request_created', self, request)
+            self.notify(events.RequestCreated(self, request))
             response = route.endpoint(request, **route.params)
-            self.notify('response_created', self, request, response)
+            self.notify(events.ResponseCreated(self, request, response))
             return response
         return None
 

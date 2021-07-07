@@ -8,7 +8,7 @@ install_requires = [
     'horseman',
     'chameleon',
     'reg',
-    'roughrider.events',
+    'reiter.events',
     'roughrider.routing',
 ]
 
