@@ -63,8 +63,8 @@ class UIRegistry:
             headers = {"Content-Type": "text/html; charset=utf-8"}
         elif 'Content-Type' not in headers:
             headers["Content-Type"] = "text/html; charset=utf-8"
-        return horseman.response.reply(
-            code=code,
+        return horseman.response.Response(
+            status=code,
             body=self.render(template, request, **kwargs),
             headers=headers,
         )
