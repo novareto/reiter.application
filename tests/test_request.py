@@ -62,22 +62,13 @@ def test_uri(environ):
         'http://test_domain.com/backend/login?user%3DSt%C3%A9phane')
 
 
-def test_app_uri(environ):
-    request = Request(None, environ, None)
-    assert request.application_uri() == 'http://test_domain.com'
-
-    environ = {**environ, "SCRIPT_NAME": "/backend"}
-    request = Request(None, environ, None)
-    assert request.application_uri() == 'http://test_domain.com/backend'
-
-
 def test_content_type(environ):
     from io import BytesIO
     from horseman.parsers import Data
 
     request = Request(None, environ, None)
     assert request.content_type is None
-    assert request.get_data() == {}
+    assert request.extract() is None
 
     environ = {
         **environ,

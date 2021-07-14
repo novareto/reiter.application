@@ -15,7 +15,7 @@ def environ():
         'HTTP_HOST': 'test_domain.com:80',
         'SERVER_PROTOCOL': 'HTTP/1.0',
         'wsgi.url_scheme': 'http',
-        'wsgi.version': (1,0),
+        'wsgi.version': (1, 0),
         'wsgi.run_once': 0,
         'wsgi.multithread': 0,
         'wsgi.multiprocess': 0,

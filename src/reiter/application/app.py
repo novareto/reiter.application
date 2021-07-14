@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from functools import partial
 from typing import Mapping
 
 import horseman.http

@@ -18,9 +18,11 @@ class UIRegistry:
     def register_layout(self, request, name: str = None):
         if name is None:
             name = self.default_layout_name
+
         def add_layout(layout):
             return self.layout.register(
                 reg.methodify(layout), request=request, name=name)
+
         return add_layout
 
     def get_layout(self, request, name=...):
